@@ -1,5 +1,5 @@
 if(!("tcltk2" %in% installed.packages())){install.packages("tcltk2");library(tcltk2)}else{library(tcltk2)}
-if(!("png" %in% installed.packages())){intall.packages("png");library(png)}else{library(png)}
+if(!("png" %in% installed.packages())){install.packages("png");library(png)}else{library(png)}
 if(!("raster" %in% installed.packages())){install.packages("raster");library("raster")}else{library("raster")}
 #if(!("audio" %in% installed.packages())){install.packages("audio");library("audio")}else{library("audio")}
 # Ubuntu wont detect my audio driver, add sound later
