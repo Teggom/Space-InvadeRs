@@ -33,7 +33,7 @@ Label <- ttklabel(window, text = "Breakout Controller")
 tkpack(Label)
 tkbind(window, "<Key-Left>", function() {Direction<<-"Left";print("Left")})
 tkbind(window, "<Key-Right>", function() {Direction<<-"Right";print("Right")})
-tkbind(window, "<Return>", function(){Action<<-TRUE;print("Enter---------------------------------------")})
+tkbind(window, "<Key-Up>", function(){Action<<-TRUE;print("Up---------------------------------------")})
 # Pause
 #tkbind(window, "<Key-p>", function() {Paused<<-!Paused;print("Pausing/Unpausing");Sys.sleep(1)})
 # Quick Quit
@@ -116,30 +116,36 @@ while(Running){
       Update = T
       if(Bullets[[position]][1]=="Player"){ # From player
         enemy_index = 1
-        while(enemy_index < length(Enemies[,1])){
+        while(enemy_index < length(Enemies[,1]) && length(Bullets)>0){
+          eUpdate = T
           if(abs(Bullets[[position]][[2]]-Enemies[enemy_index,1])<83 && abs(Bullets[[position]][[3]]-Enemies[enemy_index,2])<30){
             ## Enemy hit
             Enemies = Enemies[-enemy_index,]
-            Bullets[[-position]]
-            Update = F
+            Bullets = Bullets[-position]
+            eUpdate = F
+          }
+          if(eUpdate){
+            enemy_index = enemy_index + 1
           }
         }
-        if(Update)
+        if(Update && length(Bullets)>0){
           Bullets[[position]][[3]] = Bullets[[position]][[3]]+Player_Bullet_Speed
+        }
       } else { # From enemy
         if(Bullets[[position]][[3]] < 80){
           if(abs(Bullets[[position]][[2]]-Ship_Pos) < 50){
            # KILL PLAYER #################################### End Game Here
           }
           Bullets[[position]][[3]] = Bullets[[position]][[3]]-Enemy_Bullet_Speed
-        } else if(Bullets[[position]][[3]] < 20){
-          Bullets = Bullets[[-position]]
+        } else if(Bullets[[position]][[3]] < 20 || Bullets[[position]][[3]]>1000){
+          Bullets = Bullets[-position]
           Update = F
         }
       }
       
-      if(Update)
+      if(Update && length(Bullets)>0){
         position = position + 1
+      }
     }
     
     
@@ -154,8 +160,8 @@ while(Running){
     # Check Input - Shoot
     
     if(Action){
-      print(Bullets)
       Bullets[[length(Bullets)+1]] = list("Player", Ship_Pos, 110)
+      Action = F
     }
     
     # Update Enemies
